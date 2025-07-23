@@ -1,0 +1,38 @@
+services:
+  opensearch:
+    image: public.ecr.aws/opensearchproject/opensearch:2.19.0
+    container_name: proxy_opensearch
+    restart: unless-stopped
+    environment:
+      - 'node.name=proxy_opensearch'
+      - 'cluster.name=proxy'
+      - 'discovery.type=single-node'
+      - 'bootstrap.memory_lock=true'
+      - 'OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m'
+      - 'OPENSEARCH_INITIAL_ADMIN_PASSWORD=Password1!'
+      - 'DISABLE_INSTALL_DEMO_CONFIG=true'
+      - 'DISABLE_SECURITY_PLUGIN=true'
+    volumes:
+      - os-data:/usr/share/opensearch/data
+    networks:
+      - proxy_net
+  proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: proxy_proxy
+    restart: unless-stopped
+    environment:
+      - 'OPENSEARCH_HOST=http://opensearch:9200'
+    ports:
+      - 8000:8000
+    networks:
+      - proxy_net
+    depends_on:
+      - opensearch
+
+networks:
+  proxy_net: {}
+
+volumes:
+  os-data: {}

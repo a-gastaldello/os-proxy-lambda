@@ -1,0 +1,5 @@
+package/
+os-proxy-lambda.zip
+__pycache__/
+*.pyc
+*.pyo
