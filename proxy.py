@@ -1,9 +1,13 @@
-from flask import request, Response
+"""
+Contains the proxy request handler.
+"""
+
 from os import environ
 import logging
-import requests
 from datetime import datetime, timezone
 from json import dumps
+from flask import request, Response
+import requests
 
 OPENSEARCH_HOST = environ.get("OPENSEARCH_HOST", "http://localhost:9200")
 
@@ -49,6 +53,7 @@ def proxy_request(path: str):
             data=data,
             cookies=request.cookies,
             allow_redirects=False,
+            timeout=30,
         )
         excluded_headers = [
             "content-encoding",
@@ -67,7 +72,7 @@ def proxy_request(path: str):
         if resp.headers.get("Content-Type", "").startswith("application/json"):
             try:
                 json_content = resp.json()
-                logger.debug(f"JSON Response: {dumps(json_content)}")
+                logger.debug("JSON Response: %s", dumps(json_content))
             except ValueError:
                 logger.error("Failed to parse JSON response")
 

@@ -1,5 +1,9 @@
-from flask import request
+"""
+Contains the patch request handlers.
+"""
+
 from json import dumps
+from flask import request
 from proxy import proxy_request
 
 

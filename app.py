@@ -1,9 +1,13 @@
-from flask import Flask
+"""
+Main application.
+"""
+
 import logging
+from flask import Flask
 import serverless_wsgi
+from dotenv import load_dotenv
 from patch import patch_info_request, patch_stats_request
 from proxy import proxy_request
-from dotenv import load_dotenv
 
 if logging.getLogger().hasHandlers():
     logging.getLogger().setLevel(logging.INFO)
@@ -21,7 +25,7 @@ def cluster_stats():
 
 
 @app.route("/_cluster/stats/nodes/<node_id>", methods=["GET"])
-def cluster_stats_nodes_nodeid(node_id: str):
+def cluster_stats_nodes_nodeid():
     return patch_stats_request()
 
 
@@ -31,12 +35,12 @@ def nodes():
 
 
 @app.route("/_nodes/<node_id_or_metric>", methods=["GET"])
-def nodes_nodeidormetric(node_id_or_metric: str):
+def nodes_nodeidormetric():
     return patch_info_request()
 
 
 @app.route("/_nodes/<node_id>/<metric>", methods=["GET"])
-def nodes_nodeid_metric(node_id: str, metric: str):
+def nodes_nodeid_metric():
     return patch_info_request()
 
 
